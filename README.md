@@ -4,7 +4,7 @@
 # modtrees
 
 ``` mermaid
-graph TD
+graph LR
     Pkg["modtrees"] --> R["R/"]
     Pkg --> Tests["tests/"]
     Pkg --> Desc["DESCRIPTION"]
