@@ -1,0 +1,16 @@
+Package: modtrees
+Type: Package
+Title: Shiny Module Utilities
+Version: 0.0.0.9000
+Authors@R: 
+    person("Martin", "Frigaard", , "mjfrigaard@pm.me", role = c("aut", "cre"))
+Description: Utilities for inspecting and visualizing Shiny module structure.
+    Provides a plain-text tree view of module and namespace hierarchy by
+    statically parsing R source files.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
