@@ -3,28 +3,6 @@
 
 # modtrees
 
-``` mermaid
-graph LR
-    Pkg["modtrees"] --> R["R/"]
-    Pkg --> Tests["tests/"]
-    Pkg --> Desc["DESCRIPTION"]
-    Pkg --> Ns["NAMESPACE"]
-    R --> ModTree["mod_tree.R"]
-    R --> Extract["extract_func_def.R"]
-    R --> UsesNs["uses_ns.R"]
-    R --> FindCalls["find_calls.R"]
-    R --> BuildTree["build_tree.R"]
-    R --> RenderTree["render_tree.R"]
-    Tests --> TH["testthat.R"]
-    Tests --> TDir["testthat/"]
-    TDir --> T1["test-extract_func_def.R"]
-    TDir --> T2["test-uses_ns.R"]
-    TDir --> T3["test-find_calls.R"]
-    TDir --> T4["test-build_tree.R"]
-    TDir --> T5["test-render_tree.R"]
-    TDir --> T6["test-mod_tree.R"]
-```
-
 <!-- badges: start -->
 
 <!-- badges: end -->
@@ -47,5 +25,84 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(modtrees)
-## basic example code
+```
+
+Example using the [`ttdviewer` source
+code](https://github.com/mjfrigaard/ttdviewer) files:
+
+``` bash
+R
+├── app_server.R
+├── app_ui.R
+├── ctr.R
+├── inspect_plot.R
+├── launch.R
+├── load_tt_data.R
+├── logr_msg.R
+├── mod_input.R
+├── mod_list.R
+├── mod_plot.R
+├── mod_report_desc.R
+├── mod_report_download.R
+├── mod_report_input.R
+├── mod_table.R
+├── render_report.R
+└── testthat.R
+
+1 directory, 16 files
+```
+
+Use the `mod_tree()` function to print a module namespace tree:
+
+``` r
+mod_tree(
+  path = "R", 
+  app_fun = "launch", 
+  ui_fun = "app_ui", 
+  server_fun = "app_server"
+  )
+```
+
+``` verbatim
+█─launch
+├─█─app_ui
+│ ├─█─mod_input_ui
+│ ├─█─mod_report_input_ui
+│ ├─█─mod_report_desc_ui
+│ ├─█─mod_report_download_ui
+│ ├─█─mod_list_ui
+│ ├─█─mod_table_ui
+│ └─█─mod_plot_ui
+└─█─app_server
+  ├─█─mod_input_server
+  ├─█─mod_report_input_server
+  ├─█─mod_report_desc_server
+  ├─█─mod_list_server
+  ├─█─mod_table_server
+  ├─█─mod_plot_server
+  └─█─mod_report_download_server 
+```
+
+### Structure
+
+``` mermaid
+graph LR
+    Pkg["modtrees"] --> R["R/"]
+    Pkg --> Tests["tests/"]
+    Pkg --> Desc["DESCRIPTION"]
+    Pkg --> Ns["NAMESPACE"]
+    R --> ModTree["mod_tree.R"]
+    R --> Extract["extract_func_def.R"]
+    R --> UsesNs["uses_ns.R"]
+    R --> FindCalls["find_calls.R"]
+    R --> BuildTree["build_tree.R"]
+    R --> RenderTree["render_tree.R"]
+    Tests --> TH["testthat.R"]
+    Tests --> TDir["testthat/"]
+    TDir --> T1["test-extract_func_def.R"]
+    TDir --> T2["test-uses_ns.R"]
+    TDir --> T3["test-find_calls.R"]
+    TDir --> T4["test-build_tree.R"]
+    TDir --> T5["test-render_tree.R"]
+    TDir --> T6["test-mod_tree.R"]
 ```
