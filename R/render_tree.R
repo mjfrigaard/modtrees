@@ -1,8 +1,9 @@
-#' Render a module tree as plain-text ASCII art
+#' Render Shiny module tree as plain-text ASCII art
 #'
-#' Takes a nested tree structure (as produced by [build_tree()]) and
-#' returns a character vector of lines using box-drawing characters
-#' in the style of [lobstr::ast()].
+#' `render_tree()` takes a nested tree structure (as produced by 
+#' [build_tree()]) and returns a character vector of lines using 
+#' box-drawing characters in the style of 
+#' [`lobstr::ast()`](https://lobstr.r-lib.org/reference/ast.html).
 #'
 #' @param tree A nested list with `name` and `children` elements.
 #' @param prefix Character scalar; the current indentation prefix

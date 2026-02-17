@@ -2,7 +2,7 @@
 % Please edit documentation in R/render_tree.R
 \name{render_tree}
 \alias{render_tree}
-\title{Render a module tree as plain-text ASCII art}
+\title{Render Shiny module tree as plain-text ASCII art}
 \usage{
 render_tree(tree, prefix = "", is_last = TRUE, is_root = TRUE)
 }
@@ -20,8 +20,9 @@ render_tree(tree, prefix = "", is_last = TRUE, is_root = TRUE)
 Character vector of formatted lines.
 }
 \description{
-Takes a nested tree structure (as produced by \code{\link[=build_tree]{build_tree()}}) and
-returns a character vector of lines using box-drawing characters
-in the style of \code{\link[lobstr:ast]{lobstr::ast()}}.
+\code{render_tree()} takes a nested tree structure (as produced by
+\code{\link[=build_tree]{build_tree()}}) and returns a character vector of lines using
+box-drawing characters in the style of
+\href{https://lobstr.r-lib.org/reference/ast.html}{\code{lobstr::ast()}}.
 }
 \keyword{internal}

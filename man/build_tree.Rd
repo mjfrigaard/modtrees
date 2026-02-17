@@ -20,7 +20,8 @@ A nested list with elements \code{name} (character) and \code{children}
 (list of similar structures).
 }
 \description{
-Performs a depth-first traversal of a call graph starting from a given
-node, producing a nested list structure suitable for rendering.
+\code{build_tree()} performs a depth-first traversal of a call graph
+starting from a given node, producing a nested list structure
+suitable for rendering.
 }
 \keyword{internal}

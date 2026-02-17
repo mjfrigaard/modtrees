@@ -1,8 +1,8 @@
-#' Find references to known functions within an expression
+#' Find all references to known functions within an expression
 #'
-#' Recursively walks a parsed R expression and collects the names of any
-#' functions that appear as either direct calls (`fun()`) or bare name
-#' references (`fun`).
+#' `find_calls()` recursively walks a parsed R expression and collects
+#' the names of any functions that appear as either direct calls 
+#' (`fun()`) or bare name references (`fun`).
 #'
 #' @param expr A parsed R expression.
 #' @param known_names Character vector of function names to look for.
@@ -13,7 +13,6 @@
 #'
 find_calls <- function(expr, known_names) {
   found <- character(0)
-
   if (is.call(expr)) {
     fn <- expr[[1]]
     if (is.name(fn)) {
@@ -31,6 +30,5 @@ find_calls <- function(expr, known_names) {
       found <- c(found, nm)
     }
   }
-
   unique(found)
 }

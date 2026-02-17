@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_calls.R
 \name{find_calls}
 \alias{find_calls}
-\title{Find references to known functions within an expression}
+\title{Find all references to known functions within an expression}
 \usage{
 find_calls(expr, known_names)
 }
@@ -15,8 +15,8 @@ find_calls(expr, known_names)
 Character vector of unique matched function names.
 }
 \description{
-Recursively walks a parsed R expression and collects the names of any
-functions that appear as either direct calls (\code{fun()}) or bare name
-references (\code{fun}).
+\code{find_calls()} recursively walks a parsed R expression and collects
+the names of any functions that appear as either direct calls
+(\code{fun()}) or bare name references (\code{fun}).
 }
 \keyword{internal}

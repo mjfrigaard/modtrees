@@ -1,8 +1,8 @@
-#' Extract a function definition from an expression
+#' Extract function definitions from expression
 #'
-#' Checks whether a parsed expression is a top-level function assignment
-#' (e.g., `name <- function(...) { ... }`) and returns the function name
-#' and body.
+#' `extract_func_def()` hecks whether a parsed expression is a top-level
+#' function assignment (e.g., `name <- function(...) { ... }`) and 
+#' returns the function name and body.
 #'
 #' @param expr A parsed R expression.
 #'

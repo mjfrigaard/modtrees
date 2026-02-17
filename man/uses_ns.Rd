@@ -2,7 +2,7 @@
 % Please edit documentation in R/uses_ns.R
 \name{uses_ns}
 \alias{uses_ns}
-\title{Check if an expression contains a Shiny module identifier}
+\title{Check if expression contains Shiny module identifiers}
 \usage{
 uses_ns(expr)
 }
@@ -14,8 +14,8 @@ Logical scalar; \code{TRUE} if a call to \code{NS()} or \code{moduleServer()}
 is found.
 }
 \description{
-Recursively walks a parsed R expression to detect calls to \code{\link[shiny:NS]{shiny::NS()}}
-or \code{\link[shiny:moduleServer]{shiny::moduleServer()}}, which are reliable indicators that a function
-is a Shiny module.
+\code{uses_ns()} recursively walks a parsed R expression to detect calls
+to \code{\link[shiny:NS]{shiny::NS()}} or \code{\link[shiny:moduleServer]{shiny::moduleServer()}}, which are reliable
+indicators that a function is a Shiny module.
 }
 \keyword{internal}

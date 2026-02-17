@@ -1,8 +1,9 @@
-#' Display a Shiny module tree
+#' Display a Shiny function module tree
 #'
-#' Statically parses all R source files in a directory, detects Shiny modules
-#' (via calls to [shiny::NS()] or [shiny::moduleServer()]), builds a call
-#' graph, and prints a plain-text tree showing the module hierarchy.
+#' `mod_tree()` statically parses all R source files in a directory, 
+#' detects Shiny modules (via calls to [shiny::NS()] or 
+#' [shiny::moduleServer()]), builds a call graph, and prints a 
+#' plain-text tree showing the module hierarchy.
 #'
 #' @param path Character scalar; path to the directory containing R source
 #'   files. Defaults to `"R"`.
@@ -28,7 +29,8 @@ mod_tree <- function(path = "R",
                      ui_fun = "app_ui",
                      server_fun = "app_server") {
 
-  # 1. Parse all .R files and extract function definitions
+  # parses all .R files 
+  # extract function definitions
   r_files <- list.files(path, pattern = "\\.[Rr]$", full.names = TRUE)
 
   func_defs <- list()
@@ -45,8 +47,9 @@ mod_tree <- function(path = "R",
 
   known_names <- names(func_defs)
 
-  # 2. Detect which functions are modules (call NS() or moduleServer())
+  # detects which functions are modules 
   is_module <- vapply(func_defs, function(body) {
+    # call NS() or moduleServer()
     uses_ns(body)
   }, logical(1))
 
@@ -54,16 +57,17 @@ mod_tree <- function(path = "R",
   important <- c(app_fun, ui_fun, server_fun)
   target_names <- union(important, module_names)
 
-  # 3. Build call graph (only edges to target functions)
+  # build call graph 
   call_graph <- lapply(func_defs, function(body) {
+    # only edges to target functions
     calls <- find_calls(body, known_names)
     intersect(calls, target_names)
   })
 
-  # 4. Build tree via DFS from app_fun
+  # build tree via DFS from app_fun
   tree <- build_tree(app_fun, call_graph, visited = character(0))
 
-  # 5. Render
+  # render
   lines <- render_tree(tree, prefix = "", is_last = TRUE, is_root = TRUE)
   cat(paste(lines, collapse = "\n"), "\n")
 

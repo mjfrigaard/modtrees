@@ -2,7 +2,7 @@
 % Please edit documentation in R/mod_tree.R
 \name{mod_tree}
 \alias{mod_tree}
-\title{Display a Shiny module tree}
+\title{Display a Shiny function module tree}
 \usage{
 mod_tree(
   path = "R",
@@ -29,9 +29,10 @@ Invisibly returns the nested tree structure (a list). The tree
 is printed to the console as a side effect.
 }
 \description{
-Statically parses all R source files in a directory, detects Shiny modules
-(via calls to \code{\link[shiny:NS]{shiny::NS()}} or \code{\link[shiny:moduleServer]{shiny::moduleServer()}}), builds a call
-graph, and prints a plain-text tree showing the module hierarchy.
+\code{mod_tree()} statically parses all R source files in a directory,
+detects Shiny modules (via calls to \code{\link[shiny:NS]{shiny::NS()}} or
+\code{\link[shiny:moduleServer]{shiny::moduleServer()}}), builds a call graph, and prints a
+plain-text tree showing the module hierarchy.
 }
 \examples{
 \dontrun{

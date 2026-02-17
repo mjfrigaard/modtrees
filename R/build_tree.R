@@ -1,7 +1,8 @@
 #' Build a nested tree from a call graph
 #'
-#' Performs a depth-first traversal of a call graph starting from a given
-#' node, producing a nested list structure suitable for rendering.
+#' `build_tree()` performs a depth-first traversal of a call graph 
+#' starting from a given node, producing a nested list structure 
+#' suitable for rendering.
 #'
 #' @param node Character scalar; the root function name.
 #' @param call_graph Named list where each element is a character vector of

@@ -2,7 +2,7 @@
 % Please edit documentation in R/extract_func_def.R
 \name{extract_func_def}
 \alias{extract_func_def}
-\title{Extract a function definition from an expression}
+\title{Extract function definitions from expression}
 \usage{
 extract_func_def(expr)
 }
@@ -14,8 +14,8 @@ A list with elements \code{name} (character) and \code{body} (expression),
 or \code{NULL} if the expression is not a function definition.
 }
 \description{
-Checks whether a parsed expression is a top-level function assignment
-(e.g., \code{name <- function(...) { ... }}) and returns the function name
-and body.
+\code{extract_func_def()} hecks whether a parsed expression is a top-level
+function assignment (e.g., \code{name <- function(...) { ... }}) and
+returns the function name and body.
 }
 \keyword{internal}
