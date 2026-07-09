@@ -31,13 +31,12 @@ remotes::install_github("mjfrigaard/modtrees")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Example using the [`ttdviewer` source code](https://github.com/mjfrigaard/ttdviewer) files: 
 
 ```{r example}
 library(modtrees)
 ```
 
-Example using the [`ttdviewer` source code](https://github.com/mjfrigaard/ttdviewer) files: 
 
 ```bash
 R
@@ -92,26 +91,4 @@ mod_tree(
   └─█─mod_report_download_server 
 ```
 
-### Structure
 
-```mermaid
-graph LR
-    Pkg["modtrees"] --> R["R/"]
-    Pkg --> Tests["tests/"]
-    Pkg --> Desc["DESCRIPTION"]
-    Pkg --> Ns["NAMESPACE"]
-    R --> ModTree["mod_tree.R"]
-    R --> Extract["extract_func_def.R"]
-    R --> UsesNs["uses_ns.R"]
-    R --> FindCalls["find_calls.R"]
-    R --> BuildTree["build_tree.R"]
-    R --> RenderTree["render_tree.R"]
-    Tests --> TH["testthat.R"]
-    Tests --> TDir["testthat/"]
-    TDir --> T1["test-extract_func_def.R"]
-    TDir --> T2["test-uses_ns.R"]
-    TDir --> T3["test-find_calls.R"]
-    TDir --> T4["test-build_tree.R"]
-    TDir --> T5["test-render_tree.R"]
-    TDir --> T6["test-mod_tree.R"]
-```
