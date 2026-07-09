@@ -31,3 +31,10 @@ test_that("handles nested modules", {
   tree <- build_tree("root", cg)
   expect_equal(tree$children[["a"]]$children[["b"]]$name, "b")
 })
+
+test_that("unknown root produces a root node with no children", {
+  cg <- list(a = "b", b = character(0))
+  tree <- build_tree("missing", cg)
+  expect_equal(tree$name, "missing")
+  expect_length(tree$children, 0)
+})

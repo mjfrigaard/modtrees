@@ -1,0 +1,188 @@
+---
+title: "Test coverage and traceability"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Test coverage and traceability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>"
+)
+```
+
+```{r setup}
+library(modtrees)
+```
+
+This vignette records which tests cover which functions, summarizes the current state of the test suite, and documents known issues. It is intended as a living document: update the matrix whenever tests are added or functions change.
+
+## Functions
+
+`modtrees` exposes two exported functions and five internal helpers.
+
+| Function | Type | Test file |
+|---|---|---|
+| `mod_tree()` | exported | `test-mod_tree.R` |
+| `mod_tree_app()` | exported | `test-mod_tree_app.R` |
+| `run_demo()` | exported | — |
+| `build_tree()` | internal | `test-build_tree.R` |
+| `extract_func_def()` | internal | `test-extract_func_def.R` |
+| `find_calls()` | internal | `test-find_calls.R` |
+| `render_tree()` | internal | `test-render_tree.R` |
+| `uses_ns()` | internal | `test-uses_ns.R` |
+
+`run_demo()` is an interactive launcher with no automated tests. Its correctness is verified manually by running each bundled app.
+
+## Traceability matrix
+
+Columns mark every function exercised by each test. Integration-level tests (those in `test-mod_tree.R` and `test-mod_tree_app.R`) exercise multiple internal helpers in a single call; those cells are marked accordingly.
+
+```{r matrix, echo=FALSE}
+tests <- data.frame(
+  Description = c(
+    # build_tree
+    "builds simple tree",
+    "handles cycles",
+    "handles nested modules",
+    "unknown root produces a root node with no children",
+    # extract_func_def
+    "extracts <- function assignment",
+    "extracts = function assignment",
+    "returns NULL for non-function assignment",
+    "returns NULL for bare expressions",
+    "extracts assign() style",
+    # find_calls
+    "finds direct function calls",
+    "finds bare name references",
+    "ignores unknown names",
+    "returns unique results",
+    "finds calls nested inside control flow",
+    # mod_tree_app
+    "errors on non-shiny.appobj input",
+    "detects one module when UI is an unevaluated function",
+    "app_fun sets the root label",
+    "auto-detects UI function name when passed unevaluated",
+    "ui_fun fallback works when UI is pre-evaluated",
+    "flat tree when app has no modules",
+    "nested modules appear at the correct depth",
+    "multiple sibling modules all appear under server",
+    "non-module helpers called by modules do not appear in tree",
+    "invisibly returns the tree list",
+    # mod_tree
+    "mod_tree works on a minimal app",
+    "mod_tree errors gracefully on empty directory",
+    "custom app_fun, ui_fun, server_fun are honoured",
+    "nested modules appear at the correct depth (file-based)",
+    "no modules produces a flat tree with only top-level functions",
+    # render_tree
+    "renders root node",
+    "renders single child",
+    "renders multiple children with correct connectors",
+    "grandchild indented correctly with continuation line",
+    # uses_ns
+    "detects direct NS() call",
+    "detects shiny::NS() call",
+    "detects moduleServer() call",
+    "detects shiny::moduleServer() call",
+    "returns FALSE for non-module function"
+  ),
+  File = c(
+    rep("test-build_tree", 4),
+    rep("test-extract_func_def", 5),
+    rep("test-find_calls", 5),
+    rep("test-mod_tree_app", 10),
+    rep("test-mod_tree", 5),
+    rep("test-render_tree", 4),
+    rep("test-uses_ns", 5)
+  ),
+  mod_tree      = c(rep("",24), rep("\u2713",5), rep("",9)),
+  mod_tree_app  = c(rep("",14), rep("\u2713",10), rep("",14)),
+  build_tree    = c(rep("\u2713",4), rep("",10),
+                    "", "\u2713","\u2713","","\u2713","\u2713","\u2713","\u2713","","",
+                    rep("\u2713",5), rep("",9)),
+  extract_func_def = c(rep("",4), rep("\u2713",5), rep("",10),
+                       rep("\u2713",5), rep("",14)),
+  find_calls    = c(rep("",9), rep("\u2713",5),
+                    "", "\u2713","","","\u2713","","","","\u2713","",
+                    rep("\u2713",5), rep("",9)),
+  render_tree   = c(rep("",14),
+                    "", "\u2713","\u2713","","","","","","","",
+                    rep("\u2713",5), rep("\u2713",4), rep("",5)),
+  uses_ns       = c(rep("",14),
+                    "", "\u2713","","\u2713","\u2713","\u2713","\u2713","\u2713","\u2713","",
+                    rep("\u2713",5), rep("",9)),
+  stringsAsFactors = FALSE
+)
+
+knitr::kable(
+  tests,
+  col.names = c("Test description", "File",
+                "mod_tree", "mod_tree_app",
+                "build_tree", "extract_func_def",
+                "find_calls", "render_tree", "uses_ns"),
+  align = c("l", "l", rep("c", 7))
+)
+```
+
+## Coverage notes
+
+`run_demo()` has no automated tests. It wraps `shiny::shinyAppDir()` with path-resolution logic; its correctness depends on the bundled apps in `inst/apps/` being valid, which is implicitly verified whenever those apps are rendered for manual inspection.
+
+The `mod_tree()` integration tests in `test-mod_tree.R` exercise all five internal helpers in combination. A failure there that does not also fail the corresponding unit test points to an interaction bug rather than a bug in the helper itself.
+
+## Known issues
+
+### `extract_func_def()`: vector coercion with complex expressions
+
+Found during wild testing against the `pffoundations` package (July 2026, 35 R source files, ~20 modules).
+
+**Symptom:** `mod_tree()` crashes with:
+
+```
+'length = 3' in coercion to 'logical(1)'
+Calls: mod_tree -> extract_func_def
+```
+
+**Root cause.** Line 17 of `R/extract_func_def.R`:
+
+```r
+op <- as.character(expr[[1]])
+```
+
+When `expr[[1]]` is a complex call rather than a name, `as.character()` returns a character *vector*, not a scalar. The `%in%` check on line 19 then returns a logical vector, and `&&` cannot coerce it to a scalar.
+
+**Fix.** Take only the first element before the comparison:
+
+```r
+op <- as.character(expr[[1]])[1]
+if (op %in% c("<-", "=", "assign") && length(expr) == 3) { ...
+```
+
+Apply the same `[1]` guard to line 28:
+
+```r
+if (is.call(val) && as.character(val[[1]])[1] == "function") {
+```
+
+**Tests to add.** A test covering a complex left-hand-side expression that currently causes the crash:
+
+```r
+test_that("returns NULL safely when expr[[1]] is a complex call", {
+  # e.g. a namespaced assignment: pkg::name <- function() {}
+  expr <- parse(text = "a::b <- function() {}")[[1]]
+  expect_null(extract_func_def(expr))
+})
+```
+
+**Status:** Documented; fix and regression test pending.
+
+## Recap
+
+- 38 tests span 7 functions across 6 test files.
+- `mod_tree()` and `mod_tree_app()` each have dedicated unit tests plus integration coverage through the internal helpers they call.
+- `run_demo()` is untested automatically; manual verification through `inst/apps/` demos covers it.
+- One known bug in `extract_func_def()` causes a crash on complex left-hand-side expressions; the fix is a one-character change on two lines.

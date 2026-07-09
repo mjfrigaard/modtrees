@@ -21,3 +21,9 @@ test_that("returns unique results", {
   result <- find_calls(expr, c("foo"))
   expect_equal(result, "foo")
 })
+
+test_that("finds calls nested inside control flow", {
+  expr <- parse(text = "function() { if (TRUE) { tryCatch(foo(), error = function(e) bar()) } }")[[1]]
+  result <- find_calls(expr, c("foo", "bar"))
+  expect_setequal(result, c("foo", "bar"))
+})
