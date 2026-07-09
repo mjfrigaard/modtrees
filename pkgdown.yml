@@ -3,7 +3,9 @@ pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   getting-started: getting-started.html
-last_built: 2026-07-09T14:43Z
+  modules: modules.html
+  realistic: realistic.html
+last_built: 2026-07-09T14:59Z
 urls:
   reference: https://mjfrigaard.github.io/modtrees/reference
   article: https://mjfrigaard.github.io/modtrees/articles

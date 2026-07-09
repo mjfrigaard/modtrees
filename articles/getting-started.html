@@ -37,6 +37,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/modules.html">modules</a></li>
+    <li><a class="dropdown-item" href="../articles/realistic.html">Realistic App</a></li>
   </ul>
 </li>
       </ul>
@@ -155,146 +157,6 @@ Supply the correct names instead:</p>
   └─█─mod_counter_server</code></pre>
 <p>The tree is structurally identical to the previous one; only the
 function names differ.</p>
-</div>
-<div class="section level2">
-<h2 id="nested-modules">Nested modules<a class="anchor" aria-label="anchor" href="#nested-modules"></a>
-</h2>
-<p>When a module calls child modules internally, the tree gains depth.
-<code><a href="../reference/mod_tree.html">mod_tree()</a></code> follows the call graph recursively, so nested
-relationships appear at the correct level.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_demo.html">run_demo</a></span><span class="op">(</span><span class="st">"03-nested-modules"</span><span class="op">)</span></span></code></pre></div>
-<p>Here <code>mod_dashboard</code> is the parent module. Its UI and
-server each call <code>mod_chart</code>, making <code>mod_chart</code> a
-grandchild of the app root:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mod_tree.html">mod_tree</a></span><span class="op">(</span><span class="st">"inst/apps/03-nested-modules/R"</span><span class="op">)</span></span></code></pre></div>
-<pre class="verbatim"><code>█─launch
-├─█─app_ui
-│ └─█─mod_dashboard_ui
-│   └─█─mod_chart_ui
-└─█─app_server
-  └─█─mod_dashboard_server
-    └─█─mod_chart_server</code></pre>
-<p>The indentation reflects the true call depth. If
-<code>mod_chart</code> itself called further modules, they would appear
-one level deeper.</p>
-</div>
-<div class="section level2">
-<h2 id="no-modules">No modules<a class="anchor" aria-label="anchor" href="#no-modules"></a>
-</h2>
-<p>Not every Shiny app uses modules. When <code><a href="../reference/mod_tree.html">mod_tree()</a></code> finds
-no functions that call <code>NS()</code> or <code>moduleServer()</code>,
-the tree collapses to just the three top-level functions.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_demo.html">run_demo</a></span><span class="op">(</span><span class="st">"04-no-modules"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mod_tree.html">mod_tree</a></span><span class="op">(</span><span class="st">"inst/apps/04-no-modules/R"</span><span class="op">)</span></span></code></pre></div>
-<pre class="verbatim"><code>█─launch
-├─█─app_ui
-└─█─app_server</code></pre>
-<p>A flat tree like this is a useful signal: either the app genuinely
-has no modules, or the module-detection pass missed something. In the
-latter case, check that the module functions actually contain
-<code>NS()</code> or <code>moduleServer()</code> calls at the top level
-of their bodies.</p>
-</div>
-<div class="section level2">
-<h2 id="many-modules">Many modules<a class="anchor" aria-label="anchor" href="#many-modules"></a>
-</h2>
-<p>As the number of sibling modules grows, the tree expands
-horizontally. This app wires five modules directly into
-<code>app_ui</code> and <code>app_server</code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_demo.html">run_demo</a></span><span class="op">(</span><span class="st">"05-many-modules"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mod_tree.html">mod_tree</a></span><span class="op">(</span><span class="st">"inst/apps/05-many-modules/R"</span><span class="op">)</span></span></code></pre></div>
-<pre class="verbatim"><code>█─launch
-├─█─app_ui
-│ ├─█─mod_header_ui
-│ ├─█─mod_filter_ui
-│ ├─█─mod_table_ui
-│ ├─█─mod_chart_ui
-│ └─█─mod_footer_ui
-└─█─app_server
-  ├─█─mod_header_server
-  ├─█─mod_filter_server
-  ├─█─mod_table_server
-  ├─█─mod_chart_server
-  └─█─mod_footer_server</code></pre>
-<p>The order of children in each branch follows the order in which the
-functions are called in the source. <code>mod_filter</code> appears
-second because it is the second module called in
-<code>app_ui()</code>.</p>
-</div>
-<div class="section level2">
-<h2 id="realistic-app-with-helper-functions">Realistic app with helper functions<a class="anchor" aria-label="anchor" href="#realistic-app-with-helper-functions"></a>
-</h2>
-<p>The previous examples are deliberately minimal. Production apps
-include utilities alongside modules: logging helpers, data loaders, plot
-functions, and other non-module code. This app has all of that.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_demo.html">run_demo</a></span><span class="op">(</span><span class="st">"06-realistic-with-helpers"</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>R/</code> directory contains 14 files, including
-<code>logr_msg.R</code>, <code>scatter_plot.R</code>,
-<code>display_type.R</code>, and others that define regular functions.
-These are called from within modules but they are not modules
-themselves. <code><a href="../reference/mod_tree.html">mod_tree()</a></code> correctly excludes them from the
-tree. Provide the non-default function names for this app:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/mod_tree.html">mod_tree</a></span><span class="op">(</span></span>
-<span>  <span class="st">"inst/apps/06-realistic-with-helpers/R"</span>,</span>
-<span>  app_fun    <span class="op">=</span> <span class="st">"launch_app"</span>,</span>
-<span>  ui_fun     <span class="op">=</span> <span class="st">"movies_ui"</span>,</span>
-<span>  server_fun <span class="op">=</span> <span class="st">"movies_server"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<pre class="verbatim"><code>█─launch_app
-├─█─movies_ui
-│ ├─█─mod_var_input_ui
-│ ├─█─mod_aes_input_ui
-│ └─█─mod_scatter_display_ui
-└─█─movies_server
-  ├─█─mod_var_input_server
-  ├─█─mod_aes_input_server
-  └─█─mod_scatter_display_server</code></pre>
-<p>Even though <code>mod_scatter_display_server</code> calls
-<code>scatter_plot()</code>, that function does not appear in the tree.
-<code><a href="../reference/mod_tree.html">mod_tree()</a></code> includes a function in the output only if it is
-a detected module or one of the three named top-level functions.</p>
-</div>
-<div class="section level2">
-<h2 id="recap">Recap<a class="anchor" aria-label="anchor" href="#recap"></a>
-</h2>
-<p><code><a href="../reference/mod_tree.html">mod_tree()</a></code> statically parses R source files to build and
-print a module call graph without running the app. The six scenarios
-covered here represent the range of structures you are likely to
-encounter:</p>
-<ol style="list-style-type: decimal">
-<li>
-<strong>Default names</strong> — no arguments beyond
-<code>path</code> are needed when the app follows
-<code>launch</code>/<code>app_ui</code>/<code>app_server</code>
-conventions.</li>
-<li>
-<strong>Custom names</strong> — supply <code>app_fun</code>,
-<code>ui_fun</code>, and <code>server_fun</code> when the top-level
-functions use different names.</li>
-<li>
-<strong>Nested modules</strong> — <code><a href="../reference/mod_tree.html">mod_tree()</a></code> follows
-the call graph recursively, so child modules appear at the correct
-depth.</li>
-<li>
-<strong>No modules</strong> — a flat tree is valid output; it can
-also indicate a detection miss worth investigating.</li>
-<li>
-<strong>Many modules</strong> — sibling modules fan out
-horizontally, ordered by call sequence in the source.</li>
-<li>
-<strong>Helper functions</strong> — regular functions called by
-modules are excluded from the tree; only <code>NS()</code>- or
-<code>moduleServer()</code>-bearing functions are treated as
-modules.</li>
-</ol>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
