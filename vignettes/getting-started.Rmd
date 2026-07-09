@@ -1,8 +1,8 @@
 ---
-title: "Inspecting Shiny module structure with modtrees"
+title: "Getting Started"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Inspecting Shiny module structure with modtrees}
+  %\VignetteIndexEntry{Getting Started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
