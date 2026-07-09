@@ -1,4 +1,4 @@
-# modules
+# Modules
 
 ``` r
 
@@ -102,3 +102,56 @@ mod_tree("inst/apps/05-many-modules/R")
 The order of children in each branch follows the order in which the
 functions are called in the source. `mod_filter` appears second because
 it is the second module called in `app_ui()`.
+
+## Using `mod_tree_app()` on a live object
+
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+reads files from disk.
+[`mod_tree_app()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree_app.md)
+inspects a `shiny.appobj` in memory instead; it recovers the server
+function directly from the app object and identifies modules by walking
+the same environment. The result is the same tree.
+
+Using the five-module app as an example, build the app object by passing
+function references (not evaluated calls):
+
+``` r
+
+app <- shiny::shinyApp(ui = app_ui, server = app_server)
+```
+
+[`mod_tree_app()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree_app.md)
+requires no `path` argument. The module structure comes from the
+server’s enclosing environment, so the call is shorter when function
+names match the defaults:
+
+``` r
+
+mod_tree_app(app)
+```
+
+``` verbatim
+█─app
+├─█─app_ui
+│ ├─█─mod_header_ui
+│ ├─█─mod_filter_ui
+│ ├─█─mod_table_ui
+│ ├─█─mod_chart_ui
+│ └─█─mod_footer_ui
+└─█─app_server
+  ├─█─mod_header_server
+  ├─█─mod_filter_server
+  ├─█─mod_table_server
+  ├─█─mod_chart_server
+  └─█─mod_footer_server
+```
+
+The root label defaults to `"app"` because the `shiny.appobj` does not
+record the name of the launch function. Pass `app_fun` to override it:
+
+``` r
+
+mod_tree_app(app, app_fun = "launch")
+```
+
+The tree structure is unchanged; only the root label differs.

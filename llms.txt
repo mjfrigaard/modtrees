@@ -87,6 +87,8 @@ mod_tree(
   : Hello, World!
 - [`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
   : Display a Shiny function module tree
+- [`mod_tree_app()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree_app.md)
+  : Display a module tree from a running Shiny app object
 - [`run_demo()`](https://mjfrigaard.github.io/modtrees/reference/run_demo.md)
   : Launch a demo Shiny app
 
@@ -96,6 +98,8 @@ mod_tree(
 
 - [Getting
   Started](https://mjfrigaard.github.io/modtrees/articles/getting-started.md):
-- [modules](https://mjfrigaard.github.io/modtrees/articles/modules.md):
+- [Modules](https://mjfrigaard.github.io/modtrees/articles/modules.md):
 - [Realistic
   App](https://mjfrigaard.github.io/modtrees/articles/realistic.md):
+- [Test coverage and
+  traceability](https://mjfrigaard.github.io/modtrees/articles/tests.md):
