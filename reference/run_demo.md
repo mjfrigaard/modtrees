@@ -1,17 +1,25 @@
-# Launch the demo Shiny app
+# Launch a demo Shiny app
 
-Launches the demo Movies Review Shiny application bundled with
-`modtrees` in `inst/app/`. This is a self-contained app that
-demonstrates Shiny module structure for use with
-[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md).
+Launches one of the demo Shiny applications bundled with `modtrees`.
+When called without arguments it runs the original Movies Review app
+(`inst/app/`). Pass a folder name from `inst/apps/` to launch one of the
+targeted
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+test apps.
 
 ## Usage
 
 ``` r
-run_demo(options = list())
+run_demo(app = NULL, options = list())
 ```
 
 ## Arguments
+
+- app:
+
+  Character scalar; name of an app folder inside `inst/apps/`, e.g.
+  `"01-default-names"`. Pass `NULL` (the default) to launch the original
+  Movies Review demo in `inst/app/`.
 
 - options:
 
@@ -27,6 +35,15 @@ A Shiny application object (invisibly).
 
 ``` r
 if (interactive()) {
+  # original demo
   run_demo()
+
+  # targeted test apps
+  run_demo("01-default-names")
+  run_demo("02-custom-names")
+  run_demo("03-nested-modules")
+  run_demo("04-no-modules")
+  run_demo("05-many-modules")
+  run_demo("06-realistic-with-helpers")
 }
 ```

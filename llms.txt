@@ -88,5 +88,11 @@ mod_tree(
 - [`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
   : Display a Shiny function module tree
 - [`run_demo()`](https://mjfrigaard.github.io/modtrees/reference/run_demo.md)
-  : Launch the demo Shiny app
+  : Launch a demo Shiny app
 
+# Articles
+
+### All vignettes
+
+- [Inspecting Shiny module structure with
+  modtrees](https://mjfrigaard.github.io/modtrees/articles/modtrees.md):
