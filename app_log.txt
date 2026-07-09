@@ -1,0 +1,10 @@
+INFO [2026-04-01 09:47:48] Launching app: movies
+FATAL [2026-04-01 09:47:48] FATAL: Application failed to launch. Reason: could not find function "shinyApp"
+INFO [2026-04-01 09:48:09] Launching app: movies
+FATAL [2026-04-01 09:48:09] FATAL: Application failed to launch. Reason: could not find function "shinyApp"
+INFO [2026-04-01 09:48:31] Launching app: movies
+FATAL [2026-04-01 09:48:31] FATAL: Application failed to launch. Reason: Couldn't normalize path in `addResourcePath`, with arguments: `prefix` = 'www'; `directoryPath` = ''
+INFO [2026-04-01 09:50:42] Launching app: movies
+FATAL [2026-04-01 09:50:42] FATAL: Application failed to launch. Reason: Couldn't normalize path in `addResourcePath`, with arguments: `prefix` = 'www'; `directoryPath` = ''
+INFO [2026-04-01 10:00:28] Launching app: movies
+FATAL [2026-04-01 10:00:28] FATAL: Application failed to launch. Reason: Couldn't normalize path in `addResourcePath`, with arguments: `prefix` = 'www'; `directoryPath` = ''

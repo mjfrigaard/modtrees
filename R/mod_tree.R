@@ -33,6 +33,7 @@ mod_tree <- function(path = "R",
   # extract function definitions
   r_files <- list.files(path, pattern = "\\.[Rr]$", full.names = TRUE)
 
+  browser()
   func_defs <- list()
   for (f in r_files) {
     exprs <- tryCatch(parse(f), error = function(e) NULL)
