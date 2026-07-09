@@ -2,11 +2,15 @@
 % Please edit documentation in R/run_demo.R
 \name{run_demo}
 \alias{run_demo}
-\title{Launch the demo Shiny app}
+\title{Launch a demo Shiny app}
 \usage{
-run_demo(options = list())
+run_demo(app = NULL, options = list())
 }
 \arguments{
+\item{app}{Character scalar; name of an app folder inside \verb{inst/apps/},
+e.g. \code{"01-default-names"}. Pass \code{NULL} (the default) to launch the
+original Movies Review demo in \verb{inst/app/}.}
+
 \item{options}{A named list of options passed to \code{\link[shiny:shinyAppDir]{shiny::shinyAppDir()}},
 e.g. \code{list(port = 8080)}.}
 }
@@ -14,13 +18,23 @@ e.g. \code{list(port = 8080)}.}
 A Shiny application object (invisibly).
 }
 \description{
-Launches the demo Movies Review Shiny application bundled with \code{modtrees}
-in \verb{inst/app/}. This is a self-contained app that demonstrates Shiny module
-structure for use with \code{\link[=mod_tree]{mod_tree()}}.
+Launches one of the demo Shiny applications bundled with \code{modtrees}.
+When called without arguments it runs the original Movies Review app
+(\verb{inst/app/}). Pass a folder name from \verb{inst/apps/} to launch one of
+the targeted \code{mod_tree()} test apps.
 }
 \examples{
 if (interactive()) {
+  # original demo
   run_demo()
+
+  # targeted test apps
+  run_demo("01-default-names")
+  run_demo("02-custom-names")
+  run_demo("03-nested-modules")
+  run_demo("04-no-modules")
+  run_demo("05-many-modules")
+  run_demo("06-realistic-with-helpers")
 }
 
 }

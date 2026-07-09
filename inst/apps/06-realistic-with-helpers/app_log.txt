@@ -1,0 +1,5 @@
+INFO [2026-07-09 07:31:37] Launching UI with bslib = FALSE
+INFO [2026-07-09 07:31:38] New user session started
+ERROR [2026-07-09 07:31:38] Failed to render scatterplot. Reason: object 'movies' not found
+INFO [2026-07-09 07:32:24] Launching UI with bslib = FALSE
+INFO [2026-07-09 07:32:25] New user session started
