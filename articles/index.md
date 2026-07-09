@@ -2,5 +2,5 @@
 
 ### All vignettes
 
-- [Inspecting Shiny module structure with
-  modtrees](https://mjfrigaard.github.io/modtrees/articles/modtrees.md):
+- [Getting
+  Started](https://mjfrigaard.github.io/modtrees/articles/getting-started.md):

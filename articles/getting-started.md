@@ -1,0 +1,277 @@
+# Getting Started
+
+``` r
+
+library(modtrees)
+```
+
+As a Shiny app grows, the module hierarchy gets harder to hold in your
+head. You end up tracing through multiple files to answer a simple
+question: which module calls which? `modtrees` addresses this by
+statically parsing the R source files in a directory and printing the
+call graph as a plain-text tree, without running the app.
+
+This vignette walks through the six example applications bundled with
+`modtrees`. Each one isolates a specific scenario you’re likely to
+encounter when using
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+on a real project.
+
+## The `mod_tree()` function
+
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+takes four arguments:
+
+- `path`: the directory containing R source files (defaults to `"R"`)
+- `app_fun`: the top-level launch function name (defaults to `"launch"`)
+- `ui_fun`: the UI function name (defaults to `"app_ui"`)
+- `server_fun`: the server function name (defaults to `"app_server"`)
+
+The function parses every `.R` file in `path`, identifies functions that
+use `NS()` or `moduleServer()` as Shiny modules, builds a call graph,
+and performs a depth-first traversal starting from `app_fun`. The result
+is printed to the console.
+
+Use
+[`run_demo()`](https://mjfrigaard.github.io/modtrees/reference/run_demo.md)
+to launch any of the bundled apps interactively so you can inspect their
+source before running
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+on them.
+
+## Default names
+
+The simplest case: a single module nested under `app_ui` and
+`app_server`, with all function names matching
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)’s
+defaults. No arguments beyond `path` are needed.
+
+``` r
+
+run_demo("01-default-names")
+```
+
+The `R/` directory for this app contains `launch.R`, `app_ui.R`,
+`app_server.R`, and `mod_greet.R`. Point
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+at it:
+
+``` r
+
+mod_tree("inst/apps/01-default-names/R")
+```
+
+``` verbatim
+█─launch
+├─█─app_ui
+│ └─█─mod_greet_ui
+└─█─app_server
+  └─█─mod_greet_server
+```
+
+The root is `launch`, its two children are `app_ui` and `app_server`,
+and each carries a single module leaf.
+
+## Custom names
+
+Real apps rarely use `launch`, `app_ui`, and `app_server` verbatim. When
+the top-level functions have different names, pass them explicitly.
+
+``` r
+
+run_demo("02-custom-names")
+```
+
+This app uses `run_app()` as the launcher, `ui()` for the interface, and
+`server()` for the server logic. Calling
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+without the extra arguments would start the traversal from a function
+named `"launch"` that doesn’t exist, producing an empty tree. Supply the
+correct names instead:
+
+``` r
+
+mod_tree(
+  "inst/apps/02-custom-names/R",
+  app_fun    = "run_app",
+  ui_fun     = "ui",
+  server_fun = "server"
+)
+```
+
+``` verbatim
+█─run_app
+├─█─ui
+│ └─█─mod_counter_ui
+└─█─server
+  └─█─mod_counter_server
+```
+
+The tree is structurally identical to the previous one; only the
+function names differ.
+
+## Nested modules
+
+When a module calls child modules internally, the tree gains depth.
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+follows the call graph recursively, so nested relationships appear at
+the correct level.
+
+``` r
+
+run_demo("03-nested-modules")
+```
+
+Here `mod_dashboard` is the parent module. Its UI and server each call
+`mod_chart`, making `mod_chart` a grandchild of the app root:
+
+``` r
+
+mod_tree("inst/apps/03-nested-modules/R")
+```
+
+``` verbatim
+█─launch
+├─█─app_ui
+│ └─█─mod_dashboard_ui
+│   └─█─mod_chart_ui
+└─█─app_server
+  └─█─mod_dashboard_server
+    └─█─mod_chart_server
+```
+
+The indentation reflects the true call depth. If `mod_chart` itself
+called further modules, they would appear one level deeper.
+
+## No modules
+
+Not every Shiny app uses modules. When
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+finds no functions that call `NS()` or `moduleServer()`, the tree
+collapses to just the three top-level functions.
+
+``` r
+
+run_demo("04-no-modules")
+```
+
+``` r
+
+mod_tree("inst/apps/04-no-modules/R")
+```
+
+``` verbatim
+█─launch
+├─█─app_ui
+└─█─app_server
+```
+
+A flat tree like this is a useful signal: either the app genuinely has
+no modules, or the module-detection pass missed something. In the latter
+case, check that the module functions actually contain `NS()` or
+`moduleServer()` calls at the top level of their bodies.
+
+## Many modules
+
+As the number of sibling modules grows, the tree expands horizontally.
+This app wires five modules directly into `app_ui` and `app_server`.
+
+``` r
+
+run_demo("05-many-modules")
+```
+
+``` r
+
+mod_tree("inst/apps/05-many-modules/R")
+```
+
+``` verbatim
+█─launch
+├─█─app_ui
+│ ├─█─mod_header_ui
+│ ├─█─mod_filter_ui
+│ ├─█─mod_table_ui
+│ ├─█─mod_chart_ui
+│ └─█─mod_footer_ui
+└─█─app_server
+  ├─█─mod_header_server
+  ├─█─mod_filter_server
+  ├─█─mod_table_server
+  ├─█─mod_chart_server
+  └─█─mod_footer_server
+```
+
+The order of children in each branch follows the order in which the
+functions are called in the source. `mod_filter` appears second because
+it is the second module called in `app_ui()`.
+
+## Realistic app with helper functions
+
+The previous examples are deliberately minimal. Production apps include
+utilities alongside modules: logging helpers, data loaders, plot
+functions, and other non-module code. This app has all of that.
+
+``` r
+
+run_demo("06-realistic-with-helpers")
+```
+
+The `R/` directory contains 14 files, including `logr_msg.R`,
+`scatter_plot.R`, `display_type.R`, and others that define regular
+functions. These are called from within modules but they are not modules
+themselves.
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+correctly excludes them from the tree. Provide the non-default function
+names for this app:
+
+``` r
+
+mod_tree(
+  "inst/apps/06-realistic-with-helpers/R",
+  app_fun    = "launch_app",
+  ui_fun     = "movies_ui",
+  server_fun = "movies_server"
+)
+```
+
+``` verbatim
+█─launch_app
+├─█─movies_ui
+│ ├─█─mod_var_input_ui
+│ ├─█─mod_aes_input_ui
+│ └─█─mod_scatter_display_ui
+└─█─movies_server
+  ├─█─mod_var_input_server
+  ├─█─mod_aes_input_server
+  └─█─mod_scatter_display_server
+```
+
+Even though `mod_scatter_display_server` calls `scatter_plot()`, that
+function does not appear in the tree.
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+includes a function in the output only if it is a detected module or one
+of the three named top-level functions.
+
+## Recap
+
+[`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+statically parses R source files to build and print a module call graph
+without running the app. The six scenarios covered here represent the
+range of structures you are likely to encounter:
+
+1.  **Default names** — no arguments beyond `path` are needed when the
+    app follows `launch`/`app_ui`/`app_server` conventions.
+2.  **Custom names** — supply `app_fun`, `ui_fun`, and `server_fun` when
+    the top-level functions use different names.
+3.  **Nested modules** —
+    [`mod_tree()`](https://mjfrigaard.github.io/modtrees/reference/mod_tree.md)
+    follows the call graph recursively, so child modules appear at the
+    correct depth.
+4.  **No modules** — a flat tree is valid output; it can also indicate a
+    detection miss worth investigating.
+5.  **Many modules** — sibling modules fan out horizontally, ordered by
+    call sequence in the source.
+6.  **Helper functions** — regular functions called by modules are
+    excluded from the tree; only `NS()`- or `moduleServer()`-bearing
+    functions are treated as modules.
